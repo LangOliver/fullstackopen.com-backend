@@ -47,6 +47,11 @@ let persons = [
       
 ]
 
+
+var morgan = require('morgan')
+
+app.use(morgan('tiny'))
+
 app.get('/info', (req, res) => {
   console.log(req.headers)
   res.send (`Phonebook has info for 
