@@ -52,6 +52,11 @@ var morgan = require('morgan')
 
 app.use(morgan('tiny'))
 
+morgan.token('post-person', function(req, res) { 
+  return (`token ${JSON.stringify(res.body)}`)
+})
+app.use(morgan('post-person'))
+
 app.get('/info', (req, res) => {
   console.log(req.headers)
   res.send (`Phonebook has info for 
@@ -71,7 +76,7 @@ const generateId = () => {
     : 0
   return maxId + 1
 }
-
+app.use(morgan('json-object'))
 app.post('/api/persons', (request, response) => {
   const body = request.body
   console.log("print body: ", body)
