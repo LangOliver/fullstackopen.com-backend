@@ -67,25 +67,23 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/persons', (request, response) => {
   const body = request.body
-
-  if (!body.content) {
+  console.log("print body: ", body)
+  if (!body.name) {
     return response.status(400).json({ 
-      error: 'content missing' 
+      error: 'name is missing' 
     })
   }
 
-  const note = {
-    content: body.content,
-    important: body.important || false,
-    date: new Date(),
-    id: generateId(),
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId()
   }
 
-  persons = persons.concat(note)
-
-  response.json(note)
+  persons = persons.concat(person)
+  response.json(person)
 })
 
 app.get('/api/persons/:id', (request, response) => {
