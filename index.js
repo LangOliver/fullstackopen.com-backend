@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 
 let persons = [
@@ -62,8 +64,6 @@ app.get('/info', (req, res) => {
   res.send (`Phonebook has info for 
   ${persons.length} people </br> 
   ${new Date().toISOString()}`)
-
-
 })
 
 app.get('/api/persons', (req, res) => {
@@ -117,7 +117,7 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
