@@ -1,0 +1,8 @@
+PUT http://127.0.0.1:3001/api/persons/5ec91a6df06aeb2ee4d3f419
+
+Content-Type: application/json
+
+{
+    "name": "Gusti Knusti",
+    "phone": "123123123"
+}

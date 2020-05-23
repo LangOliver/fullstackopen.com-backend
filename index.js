@@ -8,51 +8,7 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
-let persons = [
-          {
-            "id": 1,
-            "name": "Ada Lovelaces",
-            "number": "2345"
-          },
-          {
-            "id": 2,
-            "name": "Ada Lovelace",
-            "number": "123"
-          },
-          {
-            "id": 4,
-            "name": "Arto Hellas",
-            "number": "123"
-          },
-          {
-            "id": 5,
-            "name": "Arto Hellas",
-            "number": "123123123"
-          },
-          {
-            "id": 7,
-            "name": "Ada Lovelace2",
-            "number": ""
-          },
-          {
-            "id": 9,
-            "name": "Oliver",
-            "number": "123"
-          },
-          {
-            "id": 10,
-            "name": "asdasdasdasd",
-            "number": "123"
-          },
-          {
-            "id": 11,
-            "name": "asdasdasdas",
-            "number": "123123"
-          }
-      
-]
-
-
+let persons = []
 
 var morgan = require('morgan')
 
@@ -76,12 +32,7 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => n.id))
-    : 0
-  return maxId + 1
-}
+
 app.use(morgan('json-object'))
 /* Creating a new Contact
 */
@@ -148,11 +99,28 @@ app.delete('/api/persons/:id', (request, response) => {
   })
  .catch(error => next(error))
 })
+
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  const contact = {
+    id: body.id,
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findByIdAndUpdate(request.params.id, contact, {new: true})
+  .then(updateContact => {
+    response.json(updateContact)
+  })
+  .catch(error => next(error))
+})
+
+// handler of requests with unknown endpoint
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-// handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
