@@ -1,24 +1,12 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+require('dotenv').config()
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
-// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
-const password = "emerica"
-const url =
-`mongodb+srv://fullstack:${password}@cluster0-gr4dh.gcp.mongodb.net/phonebook-app?retryWrites=true&w=majority`
-
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-
-const contactSchema = new mongoose.Schema({
-  name: String,
-  date: Date,
-  phone: String,
-})
-const Contact = mongoose.model('Person', contactSchema)
 
 let persons = [
           {
@@ -82,10 +70,9 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  Contact.find({}).then(notes => {
-    response.json(notes)
+  Person.find({}).then(persons => {
+    res.json(persons)
   })
-  res.json(persons)
 })
 
 const generateId = () => {
@@ -95,37 +82,59 @@ const generateId = () => {
   return maxId + 1
 }
 app.use(morgan('json-object'))
+/* Creating a new Contact
+*/
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  console.log("print body: ", body)
-  if (!body.name || !body.number) {
-    return response.status(400).json({ 
-      error: 'Name/Number is missing!' 
-    })
-  }
-  else if (persons.find(person => person.name === body.name)) {
-    return response.status(400).json({ 
-      error: 'A person with this name already exists!' 
-    })  }
 
-  const person = {
+  if (body.name === undefined) {
+    return response.status(400).json({ error: 'name missing' })
+  }
+  else if (body.phone === undefined) {
+    return response.status(400).json({ error: 'phone missing' })
+  }
+
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId()
-  }
+    phone: body.phone,
+    id: body.id
+  })
 
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
+  // const body = request.body
+  // console.log("print body: ", body)
+  // if (!body.name || !body.number) {
+  //   return response.status(400).json({ 
+  //     error: 'Name/Number is missing!' 
+  //   })
+  // }
+  // else if (persons.find(person => person.name === body.name)) {
+  //   return response.status(400).json({ 
+  //     error: 'A person with this name already exists!' 
+  //   })  }
+
+  // const person = {
+  //   name: body.name,
+  //   number: body.number,
+  //   id: generateId()
+  // }
+
+  // persons = persons.concat(person)
+  // response.json(person)
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  console.log("Find by id: ", request.params.id)
+  Person.findById(request.params.id).then(person => {
+    if (person) {
+      response.json(person)
+    } else {
+      response.status(404).end()
+    }
+  })
+  
 })
 
 app.delete('/api/persons/:id', (request, response) => {
