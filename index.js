@@ -87,22 +87,23 @@ app.use(morgan('json-object'))
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+
   if (body.name === undefined) {
     return response.status(400).json({ error: 'name missing' })
   }
-  else if (body.phone === undefined) {
+  else if (body.number === undefined) {
     return response.status(400).json({ error: 'phone missing' })
   }
 
   const person = new Person({
     name: body.name,
-    phone: body.phone,
-    id: body.id
+    number: body.number
   })
 
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
+
   // const body = request.body
   // console.log("print body: ", body)
   // if (!body.name || !body.number) {
