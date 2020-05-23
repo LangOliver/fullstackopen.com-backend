@@ -1,10 +1,24 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const mongoose = require('mongoose')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const password = "emerica"
+const url =
+`mongodb+srv://fullstack:${password}@cluster0-gr4dh.gcp.mongodb.net/phonebook-app?retryWrites=true&w=majority`
+
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+
+const contactSchema = new mongoose.Schema({
+  name: String,
+  date: Date,
+  phone: String,
+})
+const Contact = mongoose.model('Person', contactSchema)
 
 let persons = [
           {
@@ -68,6 +82,9 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
+  Contact.find({}).then(notes => {
+    response.json(notes)
+  })
   res.json(persons)
 })
 
