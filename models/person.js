@@ -15,9 +15,13 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   })
 
   const contactSchema = new mongoose.Schema({
-    name: String,
-    date: Date,
-    number: String,
+    name: {
+      type: String,
+      required: true
+    },
+    number: {
+      type: String,
+      required: true }
   })
 
   
