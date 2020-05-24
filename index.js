@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 
 const cors = require('cors')
-const uniqueValidator = require('mongoose-unique-validator');
 
 require('dotenv').config()
 const Person = require('./models/person')
