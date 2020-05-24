@@ -16,7 +16,7 @@ var morgan = require('morgan')
 
 app.use(morgan('tiny'))
 
-morgan.token('post-person', function(req, res) { 
+morgan.token('post-person', function(req, res) {
   return (`token ${JSON.stringify(res.body)}`)
 })
 app.use(morgan('post-person'))
@@ -57,24 +57,24 @@ app.post('/api/persons', (request, response, next) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-  .catch(error => {
-    next(error)
-  })
+    .catch(error => {
+      next(error)
+    })
 
   app.use(unknownEndpoint)
 
 
-  
+
   // const body = request.body
   // console.log("print body: ", body)
   // if (!body.name || !body.number) {
-  //   return response.status(400).json({ 
-  //     error: 'Name/Number is missing!' 
+  //   return response.status(400).json({
+  //     error: 'Name/Number is missing!'
   //   })
   // }
   // else if (persons.find(person => person.name === body.name)) {
-  //   return response.status(400).json({ 
-  //     error: 'A person with this name already exists!' 
+  //   return response.status(400).json({
+  //     error: 'A person with this name already exists!'
   //   })  }
 
   // const person = {
@@ -88,7 +88,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-  console.log("Find by id: ", request.params.id)
+  console.log('Find by id: ', request.params.id)
   Person.findById(request.params.id).then(person => {
     if (person) {
       response.json(person)
@@ -96,17 +96,17 @@ app.get('/api/persons/:id', (request, response, next) => {
       response.status(404).end()
     }
   })
-  .catch(error => {
-    next(error)
-  })
-  
+    .catch(error => {
+      next(error)
+    })
+
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id).then(result=> {
+  Person.findByIdAndRemove(request.params.id).then(result => {
     response.status(204).end()
   })
- .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 
@@ -118,11 +118,11 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(request.params.id, contact, {new: true})
-  .then(updateContact => {
-    response.json(updateContact)
-  })
-  .catch(error => next(error))
+  Person.findByIdAndUpdate(request.params.id, contact, { new: true })
+    .then(updateContact => {
+      response.json(updateContact)
+    })
+    .catch(error => next(error))
 })
 
 // handler of requests with unknown endpoint
@@ -137,10 +137,10 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
   else if(error.name === 'ValidationError') {
-    console.log("Validation error in backend: ", error.message )
-    return response.status(400).json({error: error.message})
+    console.log('Validation error in backend: ', error.message )
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
